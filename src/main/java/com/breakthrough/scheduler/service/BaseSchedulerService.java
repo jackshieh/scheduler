@@ -59,20 +59,20 @@ public abstract class BaseSchedulerService <J extends Job, T extends Serializabl
 	}
 	
 	protected abstract JobDetail buildJobDetail(final T model);
-	protected abstract Trigger buildTrigger(final T model);
+	protected abstract Trigger buildTrigger(final T model) throws Exception;
 	protected abstract JobDataMap buildJobDataMap(final T model);
 	
 	/**
 	 * Schedule our target job with {@link JobDetail} and {@link Trigger}
 	 * @param T model the scheduling model
 	 */	
-	public void doSchedule(final T model) {
-		this.jobKey = this.getJobKey();
-		this.jobDetail = buildJobDetail(model);
-		this.trigger = buildTrigger(model);
+	public void doSchedule(final T model) {		
 		try {
+			this.jobKey = this.getJobKey();
+			this.jobDetail = buildJobDetail(model);
+			this.trigger = buildTrigger(model);			
 			this.getScheduler().scheduleJob(jobDetail, trigger);
-		} catch(SchedulerException e) {
+		} catch(Exception e) {
 			logger.error(e.getMessage(), e);
 		}		
 	}	

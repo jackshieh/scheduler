@@ -45,11 +45,14 @@ public class PaymentReminderSchedulerService extends BaseSchedulerService<Paymen
 	 * @param paymentReminder the scheduling model
 	 */
 	@Override
-	protected Trigger buildTrigger(PaymentReminder model) {
+	protected Trigger buildTrigger(PaymentReminder model)  throws Exception {
+		final String DATE_FORMAT = "yyyy/MM/dd";
+		Date start = DateTool.toDate(model.getStartingDate(), DATE_FORMAT);
+		Date end = DateTool.toDate(model.getEndDate(), DATE_FORMAT);		
 		return TriggerBuilder.newTrigger().forJob(jobDetail)
 				.withIdentity(jobDetail.getKey().getName(), jobDetail.getKey().getGroup())
 				.withSchedule(CronScheduleBuilder.cronSchedule(this.buildCronExpression(model)).withMisfireHandlingInstructionDoNothing())
-				.startAt(model.getStartingDate()).endAt(model.getEndDate()).build();
+				.startAt(start).endAt(end).build();
 	}
 	
 	/**
@@ -57,7 +60,7 @@ public class PaymentReminderSchedulerService extends BaseSchedulerService<Paymen
 	 * @param paymentReminder the scheduling model
 	 * @return cronExpression cron expression
 	 */
-	private String buildCronExpression(@NotNull final PaymentReminder paymentReminder) {
+	private String buildCronExpression(@NotNull final PaymentReminder paymentReminder) throws Exception {
 			String cronExpression = null;
 			String paymentTerm = paymentReminder.getPaymentTerm().trim();
 			LocalDate scheduledDate = getScheduledDate(paymentReminder);
@@ -77,8 +80,8 @@ public class PaymentReminderSchedulerService extends BaseSchedulerService<Paymen
 	 * @param paymentReminder the data model
 	 * @return
 	 */
-	private LocalDate getScheduledDate(final PaymentReminder paymentReminder) {
-		Date scheduledDate = DateUtils.addDays(paymentReminder.getStartingDate(), - paymentReminder.getDaysScheduled());
+	private LocalDate getScheduledDate(final PaymentReminder paymentReminder) throws Exception {
+		Date scheduledDate = DateUtils.addDays(DateTool.toDate(paymentReminder.getStartingDate(), "yyyy/MM/dd"), - paymentReminder.getDaysScheduled());
 		logger.info("scheduled date" + scheduledDate);
 		return DateTool.toLocalDate(scheduledDate);		
 	}

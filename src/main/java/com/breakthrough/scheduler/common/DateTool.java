@@ -1,8 +1,10 @@
 package com.breakthrough.scheduler.common;
 
-import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Date;
 
 public class DateTool {
 	
@@ -18,4 +20,14 @@ public class DateTool {
 		return java.util.Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
 	}
 	
+	/**
+	 * @param dateString
+	 * @param dateFormat ex: "yyyy/MM/dd"
+	 * @return
+	 * @throws Exception
+	 */
+	public static Date toDate(final String dateString, final String dateFormat) throws Exception {
+		DateFormat df = new SimpleDateFormat(dateFormat);
+		return df.parse(dateString);
+	}	
 }
