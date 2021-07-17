@@ -1,7 +1,6 @@
 package com.breakthrough.scheduler.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
