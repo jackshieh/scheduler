@@ -11,6 +11,7 @@ import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.Trigger;
+import org.quartz.TriggerListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,15 +66,21 @@ public abstract class BaseSchedulerService <J extends Job, T extends Serializabl
 	 * Schedule our target job with {@link JobDetail} and {@link Trigger}
 	 * @param T model the scheduling model
 	 */	
-	public void doSchedule(final T model) {		
-		try {
+	public void doSchedule(final T model) throws Exception {		
 			this.jobKey = this.getJobKey();
 			this.jobDetail = buildJobDetail(model);
-			this.trigger = buildTrigger(model);			
+			this.trigger = buildTrigger(model);	
 			this.getScheduler().scheduleJob(jobDetail, trigger);
-		} catch(Exception e) {
-			logger.error(e.getMessage(), e);
-		}		
-	}	
+	}
+	
+	public void doSchedule(final T model, TriggerListener triggerListener) throws Exception {
+		this.jobKey = this.getJobKey();
+		this.jobDetail = buildJobDetail(model);
+		this.trigger = buildTrigger(model);	
+		if (triggerListener != null) {
+			this.getScheduler().getListenerManager().addTriggerListener(triggerListener);
+		}
+		this.getScheduler().scheduleJob(jobDetail, trigger);		
+	}
 	
 }

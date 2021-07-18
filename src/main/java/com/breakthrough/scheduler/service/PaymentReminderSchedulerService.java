@@ -95,11 +95,5 @@ public class PaymentReminderSchedulerService extends BaseSchedulerService<Paymen
 		Map<String, Object> dataMap = ObjectUtils.toMap(model);
 		return new JobDataMap(dataMap);
 	}
-
-	public static void  main(String[] args) {
-		PaymentReminderSchedulerService ps = new PaymentReminderSchedulerService();
-		System.out.println(ps.getJobClass().getName());
-		System.out.println(ps.getJobClass().getSimpleName());
-	}
 	
 }

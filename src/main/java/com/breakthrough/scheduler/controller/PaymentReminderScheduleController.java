@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.breakthrough.scheduler.listener.PaymentReminderTriggerListener;
 import com.breakthrough.scheduler.model.PaymentReminder;
 import com.breakthrough.scheduler.service.PaymentReminderSchedulerService;
 
@@ -29,7 +30,8 @@ public class PaymentReminderScheduleController {
 	public void schedulePaymentReminder(final PaymentReminder paymentReminder) {
 
 		try {
-			this.paymentReminderSchedulerService.doSchedule(paymentReminder);
+			PaymentReminderTriggerListener paymentReminderTriggerListner = new PaymentReminderTriggerListener();
+			this.paymentReminderSchedulerService.doSchedule(paymentReminder, paymentReminderTriggerListner);
 		}
 		catch (Exception e) {
 			log.error(e.getMessage());
