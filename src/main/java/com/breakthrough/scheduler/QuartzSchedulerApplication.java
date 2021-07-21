@@ -6,14 +6,14 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 @SpringBootApplication
-public class QuartsSchedulerApplication extends SpringBootServletInitializer {
+public class QuartzSchedulerApplication extends SpringBootServletInitializer {
 
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(QuartsSchedulerApplication.class);
+		return application.sources(QuartzSchedulerApplication.class);
 	}
     
 	public static void main(String[] args) {
-		SpringApplication.run(QuartsSchedulerApplication.class, args);
+		SpringApplication.run(QuartzSchedulerApplication.class, args);
 	}
 	
 }
