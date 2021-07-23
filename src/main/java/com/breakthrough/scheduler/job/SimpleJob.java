@@ -9,28 +9,19 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import com.breakthrough.scheduler.dto.PaymentDTO;
 
+public class SimpleJob extends QuartzJobBean {
 
-
-
-/**
- * Use {@link QuartzJobBean} instead of the native Job interface
- * @author jack
- *
- */
-public class PaymentReminderJob extends QuartzJobBean {
-	
 	@Value("${jms.queue.destination}")
 	private String queue;
 	
 	@Autowired
 	private JmsTemplate jmsTemplate;
-	
+
 	// SpringBeanJobFactory will inject job properties with JobDataMap
 	private String companyName;
 	private String companyId;
 	private int billingDay;
 	private int paymentDay;
-	private String paymentTerm;
 	
 	public void setCompanyName(String companyName) {
 		this.companyName = companyName;
@@ -47,25 +38,18 @@ public class PaymentReminderJob extends QuartzJobBean {
 	public void setPaymentDay(int paymentDay) {
 		this.paymentDay = paymentDay;
 	}
-
-	public void setPaymentTerm(String paymentTerm) {
-		this.paymentTerm = paymentTerm;
-	}
-
-
+	
 	@Override
-	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {		
-		// JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
-		// send message to Artemis using paymentDTO
+	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
 		PaymentDTO paymentDTO = new PaymentDTO();
 		
-		paymentDTO.setCompanyName(this.companyName);
-		paymentDTO.setCompanyId(this.companyId);
-		paymentDTO.setBillingDay(this.billingDay);
-		paymentDTO.setPaymentDay(this.paymentDay);
-		paymentDTO.setPaymentTerm(this.paymentTerm);
+		paymentDTO.setCompanyName(companyName);
+		paymentDTO.setCompanyId(companyId);
+		paymentDTO.setBillingDay(billingDay);
+		paymentDTO.setPaymentDay(paymentDay);
 		
-		this.jmsTemplate.send(queue, session -> session.createObjectMessage(paymentDTO));		
+		this.jmsTemplate.send(queue, session -> session.createObjectMessage(paymentDTO));				
+		
 	}
 
 }

@@ -36,7 +36,7 @@ public class PaymentReminderSchedulerService extends BaseSchedulerService<Paymen
 	protected JobDetail buildJobDetail(final PaymentReminder model) {
 //		final String jobName = this.generateJobName();
 //		final String jobGroup = this.getJobGroup();
-		return JobBuilder.newJob().withIdentity(this.jobKey).setJobData(this.buildJobDataMap(model))
+		return JobBuilder.newJob(this.getJobClass()).withIdentity(this.jobKey).setJobData(this.buildJobDataMap(model))
 				.storeDurably().build();
 	}
 
@@ -49,7 +49,7 @@ public class PaymentReminderSchedulerService extends BaseSchedulerService<Paymen
 		final String DATE_FORMAT = "yyyy/MM/dd";
 		Date start = DateTool.toDate(model.getStartingDate(), DATE_FORMAT);
 		Date end = DateTool.toDate(model.getEndDate(), DATE_FORMAT);		
-		return TriggerBuilder.newTrigger().forJob(jobDetail)
+		return TriggerBuilder.newTrigger().forJob(jobDetail).withDescription("公司請款")
 				.withIdentity(jobDetail.getKey().getName(), jobDetail.getKey().getGroup())
 				.withSchedule(CronScheduleBuilder.cronSchedule(this.buildCronExpression(model)).withMisfireHandlingInstructionDoNothing())
 				.startAt(start).endAt(end).build();
@@ -81,7 +81,11 @@ public class PaymentReminderSchedulerService extends BaseSchedulerService<Paymen
 	 * @return
 	 */
 	private LocalDate getScheduledDate(final PaymentReminder paymentReminder) throws Exception {
-		Date scheduledDate = DateUtils.addDays(DateTool.toDate(paymentReminder.getStartingDate(), "yyyy/MM/dd"), - paymentReminder.getDaysScheduled());
+		int daysToBeAdded = 5; 
+		if (paymentReminder.getDaysScheduled() != 0) {
+			daysToBeAdded = paymentReminder.getDaysScheduled();
+		}		
+		Date scheduledDate = DateUtils.addDays(DateTool.toDate(paymentReminder.getStartingDate(), "yyyy/MM/dd"), - daysToBeAdded);
 		logger.info("scheduled date" + scheduledDate);
 		return DateTool.toLocalDate(scheduledDate);		
 	}

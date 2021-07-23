@@ -29,5 +29,15 @@ public class DateTool {
 	public static Date toDate(final String dateString, final String dateFormat) throws Exception {
 		DateFormat df = new SimpleDateFormat(dateFormat);
 		return df.parse(dateString);
-	}	
+	}
+	
+	public static String now() {
+		DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+		return df.format(new Date());
+	}
+	
+	public static String toString(final Date date) {
+		DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+		return df.format(date);
+	}
 }

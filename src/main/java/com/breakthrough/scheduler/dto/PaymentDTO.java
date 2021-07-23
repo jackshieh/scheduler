@@ -2,6 +2,8 @@ package com.breakthrough.scheduler.dto;
 
 import java.io.Serializable;
 
+import com.breakthrough.scheduler.common.PaymentTerm;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,5 +17,5 @@ public class PaymentDTO implements Serializable {
 	private String companyId;
 	private int billingDay;
 	private int paymentDay;
-	private String paymentTerm;
+	private String paymentTerm = PaymentTerm.CURRENT_MONTH.getChinese();
 }

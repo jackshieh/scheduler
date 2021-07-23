@@ -30,6 +30,7 @@ public abstract class BaseSchedulerService <J extends Job, T extends Serializabl
 	@SuppressWarnings("unchecked")
 	public BaseSchedulerService() {
 		this.jobClass = (Class<J>)  ((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+		logger.info("jobClass: " + this.jobClass);
 		this.jobGroup = this.jobClass.getSimpleName() + "Group";
 	}
 	
@@ -67,20 +68,33 @@ public abstract class BaseSchedulerService <J extends Job, T extends Serializabl
 	 * @param T model the scheduling model
 	 */	
 	public void doSchedule(final T model) throws Exception {		
-			this.jobKey = this.getJobKey();
-			this.jobDetail = buildJobDetail(model);
-			this.trigger = buildTrigger(model);	
+			this.buildJobDeailAndTrigger(model);
 			this.getScheduler().scheduleJob(jobDetail, trigger);
 	}
 	
+	/**
+	 * Schedule our target job with {@link JobDetail}, {@link Trigger} and {@link TriggerListener}
+	 * @param model
+	 * @param triggerListener
+	 * @throws Exception
+	 */
 	public void doSchedule(final T model, TriggerListener triggerListener) throws Exception {
-		this.jobKey = this.getJobKey();
-		this.jobDetail = buildJobDetail(model);
-		this.trigger = buildTrigger(model);	
+		this.buildJobDeailAndTrigger(model);
 		if (triggerListener != null) {
 			this.getScheduler().getListenerManager().addTriggerListener(triggerListener);
 		}
 		this.getScheduler().scheduleJob(jobDetail, trigger);		
+	}
+	
+	/**
+	 * Generate new JobKey, JobDetail and Trigger based on the model
+	 * @param model
+	 * @throws Exception
+	 */
+	private void buildJobDeailAndTrigger(final T model) throws Exception {
+		this.jobKey = this.getJobKey();
+		this.jobDetail = buildJobDetail(model);
+		this.trigger = buildTrigger(model);			
 	}
 	
 }
