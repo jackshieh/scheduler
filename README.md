@@ -1,4 +1,4 @@
-[![License](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+[![License](https://img.shields.io/github/license/jackshieh/scheduler.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 # Payment Reminder
 ## Frameworks
