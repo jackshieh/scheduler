@@ -31,6 +31,7 @@ public class PaymentReminderJob extends QuartzJobBean {
 	private int billingDay;
 	private int paymentDay;
 	private String paymentTerm;
+	private String projectName;
 	
 	public void setCompanyName(String companyName) {
 		this.companyName = companyName;
@@ -52,6 +53,9 @@ public class PaymentReminderJob extends QuartzJobBean {
 		this.paymentTerm = paymentTerm;
 	}
 
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
 
 	@Override
 	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {		
@@ -64,8 +68,9 @@ public class PaymentReminderJob extends QuartzJobBean {
 		paymentDTO.setBillingDay(this.billingDay);
 		paymentDTO.setPaymentDay(this.paymentDay);
 		paymentDTO.setPaymentTerm(this.paymentTerm);
-		
-		this.jmsTemplate.send(queue, session -> session.createObjectMessage(paymentDTO));		
+		paymentDTO.setProjectName(this.projectName);
+		this.jmsTemplate.convertAndSend(queue, paymentDTO);
+		// this.jmsTemplate.send(queue, session -> session.createObjectMessage(paymentDTO));		
 	}
 
 }

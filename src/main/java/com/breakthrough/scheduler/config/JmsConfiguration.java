@@ -1,5 +1,7 @@
 package com.breakthrough.scheduler.config;
 
+import javax.jms.ConnectionFactory;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer;
 import org.springframework.context.annotation.Bean;
@@ -17,13 +19,11 @@ public class JmsConfiguration {
 	private String queue;
 	
 	@Bean
-	public DefaultJmsListenerContainerFactory myFactory(DefaultJmsListenerContainerFactoryConfigurer configurer) {
+	public DefaultJmsListenerContainerFactory myFactory(ConnectionFactory connectionFactory, DefaultJmsListenerContainerFactoryConfigurer configurer) {
 		DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
-		factory.setMessageConverter(jacksonJmsMessageConverter());
-		factory.setConcurrency("3-10");
+		configurer.configure(factory, connectionFactory);
 		return factory;
 	}
-
 	
 	@Bean // Serialize message content to json using TextMessage
 	public MessageConverter jacksonJmsMessageConverter() {
